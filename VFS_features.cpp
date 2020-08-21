@@ -31,39 +31,39 @@
 
 typedef struct superblock
 {
-int Totalnodes;
-int FreeInode;
+    int Totalnodes;
+    int FreeInode;
 } SUPERBLOCK, * PSUPERBLOCK;
 
 
 typedef struct inode
 {
-char FileName[50];
-int inodeNumber;
-int FileSize;
-int FileActualSize;
-int FileType;
-char* Buffer;
-int LinkCount;
-int ReferenceCount;
-int permission;
-struct inode* next;
+    char FileName[50];
+    int inodeNumber;
+    int FileSize;
+    int FileActualSize;
+    int FileType;
+    char* Buffer;
+    int LinkCount;
+    int ReferenceCount;
+    int permission;
+    struct inode* next;
 } INODE, * PINODE, ** PPINODE;
 
 
 typedef struct filetable
 {
-int readoffset;
-int writeoffset;
-int count;
-int mode;
-PINODE ptrinode;
+    int readoffset;
+    int writeoffset;
+    int count;
+    int mode;
+    PINODE ptrinode;
 }FILETABLE, * PFILETABLE;
 
 
 typedef struct uftd
 {
-PFILETABLE ptrfiletable;
+    PFILETABLE ptrfiletable;
 }UFTD;
 
 UFTD UFTDArr[MAXINODE];
@@ -147,71 +147,71 @@ void man(char *name)
 
 void DisplayHelp()
 {
-printf("ls : List out all the files \n");
-printf("clear : To clear the console \n");
-printf("open : To open the file \n");
-printf("close : TO close the file \n");
-printf("closeall : To close all the files \n");
-printf("read : To Read the contents of the file \n");
-printf("write : To write the contents of the file \n");
-printf("stat : To Display information of file using name \n");
-printf("fstat : To Display information of file using file descriptor \n");
-printf("truncate : To remove all the data from file \n");
-printf("rm : To delete the file \n");
-printf("create : To Create new file \n");
-printf("lseek : To change the read and write offset of specified file \n");
-printf("exit : To terminate the file system \n");
-printf("\nTo Know about specific command use : man command_name \n");
+    printf("ls : List out all the files \n");
+    printf("clear : To clear the console \n");
+    printf("open : To open the file \n");
+    printf("close : TO close the file \n");
+    printf("closeall : To close all the files \n");
+    printf("read : To Read the contents of the file \n");
+    printf("write : To write the contents of the file \n");
+    printf("stat : To Display information of file using name \n");
+    printf("fstat : To Display information of file using file descriptor \n");
+    printf("truncate : To remove all the data from file \n");
+    printf("rm : To delete the file \n");
+    printf("create : To Create new file \n");
+    printf("lseek : To change the read and write offset of specified file \n");
+    printf("exit : To terminate the file system \n");
+    printf("\nTo Know about specific command use : man command_name \n");
 
 }
 
 int GetFDFromName(char* name)
 {
-int i = 0;
-while (i < MAXINODE)
-{
-if (UFTDArr[i].ptrfiletable != NULL)
-{
-if(strcmp((UFTDArr[i].ptrfiletable->ptrinode->FileName), name) == 0)
-{
-break;
-}
-}
-i++;
-}
+    int i = 0;
+    while (i < MAXINODE)
+    {
+        if (UFTDArr[i].ptrfiletable != NULL)
+        {
+            if(strcmp((UFTDArr[i].ptrfiletable->ptrinode->FileName), name) == 0)
+            {
+                break;
+            }
+        }
+        i++;
+    }
 
-if (i == MAXINODE)
-{
-return -1;
-}
+    if (i == MAXINODE)
+    {
+        return -1;
+    }
 
-else
-{
-return i;
-}
+    else
+    {
+        return i;
+    }
 }
 
 
 PINODE Get_Inode(char* name)
 {
-PINODE temp = head;
-int i = 0;
+    PINODE temp = head;
+    int i = 0;
 
-if (name == NULL)
-{
-return NULL;
-}
+    if (name == NULL)
+    {
+        return NULL;
+    }
 
-while (temp != NULL)
-{
-if (strcmp(name, temp->FileName) == 0)
-{
-break;
-}
+    while (temp != NULL)
+    {
+        if (strcmp(name, temp->FileName) == 0)
+        {
+            break;
+        }
 
-temp = temp->next;
-}
-return temp;
+        temp = temp->next;
+    }
+    return temp;
 }
 
 void CreateDILB()
@@ -255,8 +255,8 @@ void InitialiseSuperBlock()
 
     while (i < MAXINODE)
     {
-    UFTDArr[i].ptrfiletable = NULL;
-    i++;
+        UFTDArr[i].ptrfiletable = NULL;
+        i++;
     }
 
     SUPERBLOCKobj.Totalnodes = MAXINODE;
@@ -377,49 +377,49 @@ void Free_all()
 
 int ReadFile(int fd, char* arr, int isize)
 {
-int read_size = 0;
+    int read_size = 0;
 
-if (UFTDArr[fd].ptrfiletable == NULL)
-{
-return -1;
-}
+    if (UFTDArr[fd].ptrfiletable == NULL)
+    {
+        return -1;
+    }
 
-if ((UFTDArr[fd].ptrfiletable->mode != READ) && (UFTDArr[fd].ptrfiletable->mode != READ + WRITE))
-{
-return -2;
-}
+    if ((UFTDArr[fd].ptrfiletable->mode != READ) && (UFTDArr[fd].ptrfiletable->mode != READ + WRITE))
+    {
+        return -2;
+    }
 
-if ((UFTDArr[fd].ptrfiletable->ptrinode->permission != READ) && (UFTDArr[fd].ptrfiletable->ptrinode->permission != READ + WRITE))
-{
-return -2;
-}
+    if ((UFTDArr[fd].ptrfiletable->ptrinode->permission != READ) && (UFTDArr[fd].ptrfiletable->ptrinode->permission != READ + WRITE))
+    {
+        return -2;
+    }
 
-if (UFTDArr[fd].ptrfiletable->readoffset == UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize)
-{
-return -3;
-}
+    if (UFTDArr[fd].ptrfiletable->readoffset == UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize)
+    {
+        return -3;
+    }
 
-if ((UFTDArr[fd].ptrfiletable->ptrinode->FileType) != REGULAR)
-{
-return -4;
-}
+    if ((UFTDArr[fd].ptrfiletable->ptrinode->FileType) != REGULAR)
+    {
+        return -4;
+    }
 
-read_size = (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) - (UFTDArr[fd].ptrfiletable->readoffset);
+    read_size = (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) - (UFTDArr[fd].ptrfiletable->readoffset);
 
-if (read_size < isize)
-{
-strncpy(arr, (UFTDArr[fd].ptrfiletable->ptrinode->Buffer) + (UFTDArr[fd].ptrfiletable->readoffset), read_size);
+    if (read_size < isize)
+    {
+        strncpy(arr, (UFTDArr[fd].ptrfiletable->ptrinode->Buffer) + (UFTDArr[fd].ptrfiletable->readoffset), read_size);
 
-UFTDArr[fd].ptrfiletable->readoffset = UFTDArr[fd].ptrfiletable->readoffset + read_size;
+        UFTDArr[fd].ptrfiletable->readoffset = UFTDArr[fd].ptrfiletable->readoffset + read_size;
 
 return read_size;       //new
 }
 
 else
 {
-strncpy(arr, (UFTDArr[fd].ptrfiletable->ptrinode->Buffer) + (UFTDArr[fd].ptrfiletable->readoffset), isize);
+    strncpy(arr, (UFTDArr[fd].ptrfiletable->ptrinode->Buffer) + (UFTDArr[fd].ptrfiletable->readoffset), isize);
 
-UFTDArr[fd].ptrfiletable->readoffset = UFTDArr[fd].ptrfiletable->readoffset + isize;
+    UFTDArr[fd].ptrfiletable->readoffset = UFTDArr[fd].ptrfiletable->readoffset + isize;
 }
 
 return isize;
@@ -428,198 +428,198 @@ return isize;
 
 int WriteFile(int fd,char*arr,int isize)
 {
-if ((UFTDArr[fd].ptrfiletable->mode != WRITE) && (UFTDArr[fd].ptrfiletable->mode != READ + WRITE))
-{
-return -1;
-}
+    if ((UFTDArr[fd].ptrfiletable->mode != WRITE) && (UFTDArr[fd].ptrfiletable->mode != READ + WRITE))
+    {
+        return -1;
+    }
 
-if ((UFTDArr[fd].ptrfiletable->ptrinode->permission != WRITE) && (UFTDArr[fd].ptrfiletable->ptrinode->permission != READ + WRITE))
-{
-return -1;
-}
+    if ((UFTDArr[fd].ptrfiletable->ptrinode->permission != WRITE) && (UFTDArr[fd].ptrfiletable->ptrinode->permission != READ + WRITE))
+    {
+        return -1;
+    }
 
 // if ((UFTDArr[fd].ptrfiletable->writeoffset) == MAXFILESIZE)
 // {
 // return -2;
 // }
 
-if ((UFTDArr[fd].ptrfiletable->ptrinode->FileType) != REGULAR)
-{
-return -3;
-}
+    if ((UFTDArr[fd].ptrfiletable->ptrinode->FileType) != REGULAR)
+    {
+        return -3;
+    }
 
-if((UFTDArr[fd].ptrfiletable->ptrinode->FileSize-(UFTDArr[fd].ptrfiletable->writeoffset+isize))<=0)
-{
-    UFTDArr[fd].ptrfiletable->ptrinode->FileSize=UFTDArr[fd].ptrfiletable->ptrinode->FileSize + MAXFILESIZE;
-    UFTDArr[fd].ptrfiletable->ptrinode->Buffer=(char *)realloc(UFTDArr[fd].ptrfiletable->ptrinode->Buffer, UFTDArr[fd].ptrfiletable->ptrinode->FileSize);
-}
+    if((UFTDArr[fd].ptrfiletable->ptrinode->FileSize-(UFTDArr[fd].ptrfiletable->writeoffset+isize))<=0)
+    {
+        UFTDArr[fd].ptrfiletable->ptrinode->FileSize=UFTDArr[fd].ptrfiletable->ptrinode->FileSize + MAXFILESIZE;
+        UFTDArr[fd].ptrfiletable->ptrinode->Buffer=(char *)realloc(UFTDArr[fd].ptrfiletable->ptrinode->Buffer, UFTDArr[fd].ptrfiletable->ptrinode->FileSize);
+    }
 
-strncpy((UFTDArr[fd].ptrfiletable->ptrinode->Buffer) + (UFTDArr[fd].ptrfiletable->writeoffset), arr,isize);
+    strncpy((UFTDArr[fd].ptrfiletable->ptrinode->Buffer) + (UFTDArr[fd].ptrfiletable->writeoffset), arr,isize);
 
-(UFTDArr[fd].ptrfiletable->writeoffset) = (UFTDArr[fd].ptrfiletable->writeoffset) + isize;
+    (UFTDArr[fd].ptrfiletable->writeoffset) = (UFTDArr[fd].ptrfiletable->writeoffset) + isize;
 
-(UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) = (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) + isize;
-return isize;
+    (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) = (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) + isize;
+    return isize;
 }
 
 
 
 int OpenFile(char* name, int mode)
 {
-int i = 0;
-PINODE temp = NULL;
+    int i = 0;
+    PINODE temp = NULL;
 
-if ((name == NULL) || (mode <= 0))
-{
-return -1;
-}
+    if ((name == NULL) || (mode <= 0))
+    {
+        return -1;
+    }
 
-temp = Get_Inode(name);
+    temp = Get_Inode(name);
 
-if (temp == NULL)
-{
-return -2;
-}
+    if (temp == NULL)
+    {
+        return -2;
+    }
 
-if (temp->permission < mode)
-{
-return -3;
-}
+    if (temp->permission < mode)
+    {
+        return -3;
+    }
 
-while (i < 50)
-{
-if (UFTDArr[i].ptrfiletable == NULL)
-{
-break;
-}
-i++;
-}
+    while (i < 50)
+    {
+        if (UFTDArr[i].ptrfiletable == NULL)
+        {
+            break;
+        }
+        i++;
+    }
 
-UFTDArr[i].ptrfiletable = (PFILETABLE)malloc(sizeof(FILETABLE));
-if (UFTDArr[i].ptrfiletable == NULL)
-{
-return -1;
-}
+    UFTDArr[i].ptrfiletable = (PFILETABLE)malloc(sizeof(FILETABLE));
+    if (UFTDArr[i].ptrfiletable == NULL)
+    {
+        return -1;
+    }
 
-UFTDArr[i].ptrfiletable->count = 1;
-UFTDArr[i].ptrfiletable->mode = mode;
-if (mode == READ + WRITE)
-{
-UFTDArr[i].ptrfiletable->readoffset = 0;
-UFTDArr[i].ptrfiletable->writeoffset = 0;
-}
+    UFTDArr[i].ptrfiletable->count = 1;
+    UFTDArr[i].ptrfiletable->mode = mode;
+    if (mode == READ + WRITE)
+    {
+        UFTDArr[i].ptrfiletable->readoffset = 0;
+        UFTDArr[i].ptrfiletable->writeoffset = 0;
+    }
 
-else if (mode == READ)
-{
-UFTDArr[i].ptrfiletable->readoffset = 0;
-}
+    else if (mode == READ)
+    {
+        UFTDArr[i].ptrfiletable->readoffset = 0;
+    }
 
-else if (mode == WRITE)
-{
-UFTDArr[i].ptrfiletable->writeoffset = 0;
-}
+    else if (mode == WRITE)
+    {
+        UFTDArr[i].ptrfiletable->writeoffset = 0;
+    }
 
-UFTDArr[i].ptrfiletable->ptrinode = temp;
-(UFTDArr[i].ptrfiletable->ptrinode->ReferenceCount)++;
+    UFTDArr[i].ptrfiletable->ptrinode = temp;
+    (UFTDArr[i].ptrfiletable->ptrinode->ReferenceCount)++;
 
 }
 
 void CloseFileByFileDescriptor(int fd)
 {
-UFTDArr[fd].ptrfiletable->readoffset = 0;
-UFTDArr[fd].ptrfiletable->writeoffset = 0;
-(UFTDArr[fd].ptrfiletable->ptrinode->ReferenceCount)--;
+    UFTDArr[fd].ptrfiletable->readoffset = 0;
+    UFTDArr[fd].ptrfiletable->writeoffset = 0;
+    (UFTDArr[fd].ptrfiletable->ptrinode->ReferenceCount)--;
 }
 
 
 int CloseFileByName(char* name)
 {
-int i = 0;
-i = GetFDFromName(name);
+    int i = 0;
+    i = GetFDFromName(name);
 
-if (i == -1)
-{
-return -1;
-}
+    if (i == -1)
+    {
+        return -1;
+    }
 
-UFTDArr[i].ptrfiletable->readoffset = 0;
-UFTDArr[i].ptrfiletable->writeoffset = 0;
-(UFTDArr[i].ptrfiletable->ptrinode->ReferenceCount)--;
-return 0;
+    UFTDArr[i].ptrfiletable->readoffset = 0;
+    UFTDArr[i].ptrfiletable->writeoffset = 0;
+    (UFTDArr[i].ptrfiletable->ptrinode->ReferenceCount)--;
+    return 0;
 
 }
 
 void CloseAllFile()
 {
-int i = 0;
-while (i < 5)
-{
-if (UFTDArr[i].ptrfiletable != NULL)
-{
-UFTDArr[i].ptrfiletable->readoffset = 0;
-UFTDArr[i].ptrfiletable->writeoffset = 0;
+    int i = 0;
+    while (i < 5)
+    {
+        if (UFTDArr[i].ptrfiletable != NULL)
+        {
+            UFTDArr[i].ptrfiletable->readoffset = 0;
+            UFTDArr[i].ptrfiletable->writeoffset = 0;
 //(UFTDArr[i].ptrfiletable->ptrinode->ReferenceCount)--;
-UFTDArr[i].ptrfiletable->ptrinode->ReferenceCount=0;    
-}
-i++;
-}
+            UFTDArr[i].ptrfiletable->ptrinode->ReferenceCount=0;    
+        }
+        i++;
+    }
 }
 
 
 int LseekFile(int fd, int size, int from)
 {
-if ((fd < 0) || (from > 2))
-{
-return -1;
-}
+    if ((fd < 0) || (from > 2))
+    {
+        return -1;
+    }
 
-if (UFTDArr[fd].ptrfiletable == NULL)
-{
-return -1;
-}
+    if (UFTDArr[fd].ptrfiletable == NULL)
+    {
+        return -1;
+    }
 
-if ((UFTDArr[fd].ptrfiletable->mode == READ) || (UFTDArr[fd].ptrfiletable->mode == READ + WRITE))
-{
-if (from == CURRENT)
-{
-if (((UFTDArr[fd].ptrfiletable->readoffset) + size) > (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize))
-{
-return -1;
-}
+    if ((UFTDArr[fd].ptrfiletable->mode == READ) || (UFTDArr[fd].ptrfiletable->mode == READ + WRITE))
+    {
+        if (from == CURRENT)
+        {
+            if (((UFTDArr[fd].ptrfiletable->readoffset) + size) > (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize))
+            {
+                return -1;
+            }
 
-if (((UFTDArr[fd].ptrfiletable->readoffset) + size) < 0)
-{
-return -1;
-}
+            if (((UFTDArr[fd].ptrfiletable->readoffset) + size) < 0)
+            {
+                return -1;
+            }
 
-(UFTDArr[fd].ptrfiletable->readoffset) = (UFTDArr[fd].ptrfiletable->readoffset) + size;
+            (UFTDArr[fd].ptrfiletable->readoffset) = (UFTDArr[fd].ptrfiletable->readoffset) + size;
 
-}
-else if (from == START)
-{
-if (size > (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize))
-{
-return -1;
-}
+        }
+        else if (from == START)
+        {
+            if (size > (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize))
+            {
+                return -1;
+            }
 
-if (size < 0)
-{
-return -1;
-}
+            if (size < 0)
+            {
+                return -1;
+            }
 
-(UFTDArr[fd].ptrfiletable->readoffset) = size;
-}
+            (UFTDArr[fd].ptrfiletable->readoffset) = size;
+        }
 
-else if (from == END)
-{
+        else if (from == END)
+        {
 if (((UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) + size) > UFTDArr[fd].ptrfiletable->ptrinode->FileSize)//MAXFILESIZE
 {
-return -1;
+    return -1;
 }
 
 if (((UFTDArr[fd].ptrfiletable->readoffset) + size) < 0)
 {
-return -1;
+    return -1;
 }
 
 (UFTDArr[fd].ptrfiletable->readoffset) = ((UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) + size);
@@ -630,21 +630,21 @@ return -1;
 
 else if ((UFTDArr[fd].ptrfiletable->mode == WRITE))
 {
-if (from == CURRENT)
-{
+    if (from == CURRENT)
+    {
 if (((UFTDArr[fd].ptrfiletable->writeoffset) + size) > UFTDArr[fd].ptrfiletable->ptrinode->FileSize)//MAXFILESIZE
 {
-return -1;
+    return -1;
 }
 
 if (size < 0)
 {
-return -1;
+    return -1;
 }
 
 if (size > (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize))
 {
-(UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) = size;
+    (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) = size;
 }
 
 (UFTDArr[fd].ptrfiletable->writeoffset) = size;
@@ -654,17 +654,17 @@ else if (from == START)
 {
 if (size > UFTDArr[fd].ptrfiletable->ptrinode->FileSize)//MAXFILESIZE
 {
-return -1;
+    return -1;
 }
 
 if (size < 0)
 {
-return -1;
+    return -1;
 }
 
 if (size > (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize))
 {
-(UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) = size;
+    (UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) = size;
 }
 (UFTDArr[fd].ptrfiletable->writeoffset) = size;
 }
@@ -673,12 +673,12 @@ else if (from == END)
 {
 if (((UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) + size) > UFTDArr[fd].ptrfiletable->ptrinode->FileSize)//MAXFILESIZE
 {
-return -1;
+    return -1;
 }
 
 if (((UFTDArr[fd].ptrfiletable->writeoffset) + size) < 0)
 {
-return -1;
+    return -1;
 }
 
 (UFTDArr[fd].ptrfiletable->writeoffset) = ((UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize) + size);
@@ -688,144 +688,144 @@ return -1;
 }
 
 
- void ls_file()
- {
-int i = 0;
-PINODE temp = head;
-
-if (SUPERBLOCKobj.FreeInode == MAXINODE)
+void ls_file()
 {
-printf("ERROR : There are no files \n");
-return;
+    int i = 0;
+    PINODE temp = head;
+
+    if (SUPERBLOCKobj.FreeInode == MAXINODE)
+    {
+        printf("ERROR : There are no files \n");
+        return;
+    }
+
+    printf("\n File Name \t Inode Number \t File Size \t Link Count \n ");
+    printf("----------------------------------------------------------\n");
+    while (temp != NULL)
+    {
+        if (temp->FileType != 0)
+        {
+            printf("%s\t\t%d\t\t%d\t\t%d\n", temp->FileName, temp->inodeNumber, temp->FileActualSize, temp->LinkCount);
+        }
+
+        temp = temp->next;
+
+    }
+
+    printf("--------------------------------------------------------------\n");
 }
 
-printf("\n File Name \t Inode Number \t File Size \t Link Count \n ");
-printf("----------------------------------------------------------\n");
-while (temp != NULL)
+int fstat_file(int fd)
 {
-if (temp->FileType != 0)
+    PINODE temp = head;
+    int i = 0;
+
+    if (fd < 0)
+    {
+        return -1;
+    }
+
+    if ((UFTDArr[fd].ptrfiletable) == NULL)
+    {
+        return -2;
+    }
+
+    temp = UFTDArr[fd].ptrfiletable->ptrinode;
+
+    printf("----------------Statistical  Information about the file---------------------\n");
+    printf("File Name %s\n", temp->FileName);
+    printf("Inode Number %d\n", temp->inodeNumber);
+    printf("File size %d\n", temp->FileSize);
+    printf("Actual File size %d\n", temp->FileActualSize);
+    printf("Link Count %d\n", temp->LinkCount);
+    printf("File size %d\n", temp->FileSize);
+    printf("Reference Count %d\n", temp->ReferenceCount);
+
+    if ((temp->permission) == 1)
+    {
+        printf("File Permisssion if Read Only\n");
+    }
+
+
+    else if ((temp->permission) == 2)
+    {
+        printf("File Permisssion if Write Only\n");
+    }
+
+    else if ((temp->permission) == 3)
+    {
+        printf("File Permisssion if Read & Write \n");
+    }
+
+    return 0;
+}
+
+
+int stat_file(char* name)
 {
-printf("%s\t\t%d\t\t%d\t\t%d\n", temp->FileName, temp->inodeNumber, temp->FileActualSize, temp->LinkCount);
+    PINODE temp = head;
+    int i = 0;
+
+    if (name == NULL)
+    {
+        return -1;
+    }
+
+    while (temp != NULL)
+    {
+        if (strcmp(name, temp->FileName) == 0)
+        {
+            break;
+        }
+        temp = temp->next;
+    }
+
+    if (temp == NULL)
+    {
+        return -2;
+    }
+
+    printf("----------------Statistical  Information about the file---------------------\n");
+    printf("File Name %s\n", temp->FileName);
+    printf("Inode Number %d\n", temp->inodeNumber);
+    printf("File size %d\n", temp->FileSize);
+    printf("Actual File size %d\n", temp->FileActualSize);
+    printf("Link Count %d\n", temp->LinkCount);
+    printf("File size %d\n", temp->FileSize);
+    printf("Reference Count %d\n", temp->ReferenceCount);
+
+    if ((temp->permission) == 1)
+    {
+        printf("File Permisssion if Read Only\n");
+    }
+
+
+    else if ((temp->permission) == 2)
+    {
+        printf("File Permisssion if Write Only\n");
+    }
+
+    else if ((temp->permission) == 3)
+    {
+        printf("File Permisssion if Read & Write \n");
+    }
+
+    return 0;
 }
 
-temp = temp->next;
-
-}
-
-printf("--------------------------------------------------------------\n");
-}
-
- int fstat_file(int fd)
- {
-PINODE temp = head;
-int i = 0;
-
-if (fd < 0)
+int truncate_File(char* name)
 {
-return -1;
+    int fd = GetFDFromName(name);
+    if (fd == -1)
+    {
+        return -1;
+    }
+
+    memset(UFTDArr[fd].ptrfiletable->ptrinode->Buffer, 0, MAXFILESIZE);
+    UFTDArr[fd].ptrfiletable->readoffset = 0;
+    UFTDArr[fd].ptrfiletable->writeoffset = 0;
+    UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize = 0;
 }
-
-if ((UFTDArr[fd].ptrfiletable) == NULL)
-{
-return -2;
-}
-
-temp = UFTDArr[fd].ptrfiletable->ptrinode;
-
-printf("----------------Statistical  Information about the file---------------------\n");
-printf("File Name %s\n", temp->FileName);
-printf("Inode Number %d\n", temp->inodeNumber);
-printf("File size %d\n", temp->FileSize);
-printf("Actual File size %d\n", temp->FileActualSize);
-printf("Link Count %d\n", temp->LinkCount);
-printf("File size %d\n", temp->FileSize);
-printf("Reference Count %d\n", temp->ReferenceCount);
-
-if ((temp->permission) == 1)
-{
-printf("File Permisssion if Read Only\n");
-}
-
-
-else if ((temp->permission) == 2)
-{
-printf("File Permisssion if Write Only\n");
-}
-
-else if ((temp->permission) == 3)
-{
-printf("File Permisssion if Read & Write \n");
-}
-
-return 0;
- }
-
-
- int stat_file(char* name)
- {
-PINODE temp = head;
-int i = 0;
-
-if (name == NULL)
-{
-return -1;
-}
-
-while (temp != NULL)
-{
-if (strcmp(name, temp->FileName) == 0)
-{
-break;
-}
-temp = temp->next;
-}
-
-if (temp == NULL)
-{
-return -2;
-}
-
-printf("----------------Statistical  Information about the file---------------------\n");
-printf("File Name %s\n", temp->FileName);
-printf("Inode Number %d\n", temp->inodeNumber);
-printf("File size %d\n", temp->FileSize);
-printf("Actual File size %d\n", temp->FileActualSize);
-printf("Link Count %d\n", temp->LinkCount);
-printf("File size %d\n", temp->FileSize);
-printf("Reference Count %d\n", temp->ReferenceCount);
-
-if ((temp->permission) == 1)
-{
-printf("File Permisssion if Read Only\n");
-}
-
-
-else if ((temp->permission) == 2)
-{
-printf("File Permisssion if Write Only\n");
-}
-
-else if ((temp->permission) == 3)
-{
-printf("File Permisssion if Read & Write \n");
-}
-
-return 0;
- }
-
- int truncate_File(char* name)
- {
-int fd = GetFDFromName(name);
-if (fd == -1)
-{
-return -1;
-}
-
-memset(UFTDArr[fd].ptrfiletable->ptrinode->Buffer, 0, MAXFILESIZE);
-UFTDArr[fd].ptrfiletable->readoffset = 0;
-UFTDArr[fd].ptrfiletable->writeoffset = 0;
-UFTDArr[fd].ptrfiletable->ptrinode->FileActualSize = 0;
- }
 
 void Save_all()
 {
@@ -837,7 +837,7 @@ void Save_all()
     char *acname=(char *)malloc(50);
     
     strcpy(acname,name);
- 
+    
     char *buff=(char *)malloc(sizeof(char)*MAXFILESIZE);
     int iret=0,fd=0;
     i=0;
@@ -849,7 +849,7 @@ void Save_all()
             j=strlen(UFTDArr[i].ptrfiletable->ptrinode->FileName);
             strcpy((acname+size),UFTDArr[i].ptrfiletable->ptrinode->FileName);
             acname[size+j]='\0';
-    
+            
             fd=creat(acname,0777);
             
             UFTDArr[i].ptrfiletable->readoffset = 0;
@@ -857,7 +857,7 @@ void Save_all()
             {
                 write(fd,buff,iret);
             }
-          close(fd);      
+            close(fd);      
         }
         i++;
     }
@@ -873,7 +873,7 @@ void load_all()
     int fd=0,i=0,j=0,fd1=0,size=0;
 
     char *acname=(char *)malloc(sizeof(char)*100);
-   
+    
     i=strlen(name);
     strcpy(acname,name);
     memset(add,'\0',i);
@@ -913,7 +913,7 @@ void load_all()
             
             if(fd==-1)
                 printf("error");
-        
+            
             while((size=read(fd,add,10))!=0)
             {
                 WriteFile(fd1,add,size);
@@ -937,7 +937,7 @@ int main()
     
     InitialiseSuperBlock();
     CreateDILB();
-   
+    
     load_all();
     
     while(1)
@@ -1079,7 +1079,7 @@ int main()
         {
             if(strcmp(command[0],"create")==0)
             {
-        
+                
                 ret=CreateFile(command[1],atoi(command[2]));
                 if(ret>=0)
                     printf("File is successfully created with file descriptor : %d \n",ret);
