@@ -2,10 +2,6 @@
 /*swap partion part(part of HD which looks like RAM) :swapping the data from RAM to HD ,when RAM don't have  space,later */
 
 
-// #ifdef _MSC_VER
-// #define _CRT_SECURE_NO_WARNINGS
-// #endif
-// #pragma warning(disable : 4996)
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
